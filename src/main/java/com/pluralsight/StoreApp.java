@@ -17,14 +17,11 @@ public class StoreApp {
 
     public static void menu() {
         do {
-
             numberOfChoice(readInt());
-
         } while (keepGoing);
-
     }
 
-        public static int readInt() {
+    public static int readInt() {
         String choices = """
                     1-List all products
                     2-Lookup a product by its id
@@ -36,6 +33,10 @@ public class StoreApp {
 
         return Integer.parseInt(scanner.nextLine());
         }
+
+    public static double readDouble() {
+        return Double.parseDouble(scanner.nextLine());
+    }
 
     public static ArrayList<Product> getInventory() {
 
@@ -91,15 +92,14 @@ public class StoreApp {
                 break;
             case 3:
                 System.out.println("Enter minimum price: ");
-                double minimumPrice = Double.parseDouble(scanner.nextLine());
+                double minimumPrice = readDouble();
 
                 System.out.println("Enter maximum price: ");
-                double maximumPrice = Double.parseDouble(scanner.nextLine());
-
+                double maximumPrice = readDouble();
                 ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
                 if (!results.isEmpty()) {
                     for (Product p : results) {
-                        System.out.printf("ID: %d Name: %s Price: $%.2f%n", p.getId(), p.getName(), p.getPrice());
+                        System.out.printf("ID: %d, Name: %s, Price: $%.2f%n", p.getId(), p.getName(), p.getPrice());
                     }
                 } else {
                     System.out.println("No products found");
