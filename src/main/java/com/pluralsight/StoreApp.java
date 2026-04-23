@@ -31,46 +31,9 @@ public class StoreApp {
 
             System.out.println("What do you want to do? \n" + choices);
             int number = Integer.parseInt(scanner.nextLine());
+            numberOfChoice(number);
 
 
-            switch (number) {
-                case 1:
-                    System.out.println("We carry the following inventory: ");
-                    Collections.sort(inventory, Comparator.comparing(Product::getName));
-                    for (int i = 0; i < inventory.size(); i++) {
-                        Product p = inventory.get(i);
-                        System.out.printf("id: %d %s - Price: $%.2f%n",
-                                p.getId(), p.getName(), p.getPrice());
-                    }
-                    ;
-                    break;
-                case 2:
-                    System.out.println("What is the ID #: ");
-                    int id = Integer.parseInt(scanner.nextLine());
-
-                    Product foundProduct = findById(inventory, id);
-                    if (foundProduct != null) {
-                        System.out.println("Product Name: " + foundProduct.getName() + "\n");
-                    } else {
-                        System.out.println("Not found.");
-                    }
-                case 3:
-                    System.out.println("Enter minimum price: ");
-                    double minimumPrice = Double.parseDouble(scanner.nextLine());
-
-                    System.out.println("Enter maximum price: ");
-                    double maximumPrice = Double.parseDouble(scanner.nextLine());
-                    ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
-
-                    if (!results.isEmpty()) {
-                        for (Product p: results) {
-                            System.out.println("Product: " + p.getName() + "\n");
-                        }
-                    } else {
-                        System.out.println("No products found");
-                    }
-
-            }
         } while (!keepGoing);
     }
 
@@ -116,6 +79,47 @@ public class StoreApp {
         return null;
     }
 
+    public static void numberOfChoice(int number) {
+        switch (number) {
+            case 1:
+                System.out.println("We carry the following inventory: ");
+                Collections.sort(inventory, Comparator.comparing(Product::getName));
+                for (int i = 0; i < inventory.size(); i++) {
+                    Product p = inventory.get(i);
+                    System.out.printf("id: %d %s - Price: $%.2f%n",
+                            p.getId(), p.getName(), p.getPrice());
+                }
+                ;
+                break;
+            case 2:
+                System.out.println("What is the ID #: ");
+                int id = Integer.parseInt(scanner.nextLine());
+
+                Product foundProduct = findById(inventory, id);
+                if (foundProduct != null) {
+                    System.out.println("Product Name: " + foundProduct.getName() + "\n");
+                } else {
+                    System.out.println("Not found.");
+                }
+            case 3:
+                System.out.println("Enter minimum price: ");
+                double minimumPrice = Double.parseDouble(scanner.nextLine());
+
+                System.out.println("Enter maximum price: ");
+                double maximumPrice = Double.parseDouble(scanner.nextLine());
+                ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
+
+                if (!results.isEmpty()) {
+                    for (Product p: results) {
+                        System.out.println("Product: " + p.getName() + "\n");
+                    }
+                } else {
+                    System.out.println("No products found");
+                }
+
+        }
+    }
+
     public static ArrayList<Product> findByPriceRange(ArrayList<Product> products, double min, double max) {
        ArrayList<Product> results = new ArrayList<>();
 
@@ -127,5 +131,4 @@ public class StoreApp {
         return results;
     }
 }
-
 
