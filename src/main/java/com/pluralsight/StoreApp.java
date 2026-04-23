@@ -1,38 +1,69 @@
 package com.pluralsight;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Scanner;
 
 public class StoreApp {
-
     public static Scanner scanner = new Scanner(System.in);
     public static ArrayList<Product> inventory = getInventory();
     public static boolean keepGoing = true;
+
     static void main(String[] args) {
         menu();
     }
 
     public static void menu() {
         do {
-            String choices = """
+
+            numberOfChoice(readInt());
+
+        } while (keepGoing);
+
+    }
+
+        public static int readInt() {
+        String choices = """
                     1-List all products
                     2-Lookup a product by its id
                     3-Find all products within a price range
                     4-Add a new product
                     5-Quit the application \n
                     """;
+        System.out.println("\nWhat do you want to do? \n" + choices);
 
-            System.out.println("What do you want to do? \n" + choices);
-            int number = Integer.parseInt(scanner.nextLine());
-            numberOfChoice(number);
+        return Integer.parseInt(scanner.nextLine());
+        }
 
-        } while (keepGoing);
+    public static ArrayList<Product> getInventory() {
+
+        ArrayList<Product> inventory = new ArrayList<Product>();
+
+        //Reads file line by line
+        try {
+            FileReader fileReader = new FileReader("src/main/resources/inventory.csv");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] lineSplit = line.split("\\|");
+
+                int id = Integer.parseInt(lineSplit[0]);
+                String productName = lineSplit[1];
+                double price = Double.parseDouble(lineSplit[2]);
+
+                Product product = new Product(id, productName, price);
+
+                inventory.add(product);
+
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return inventory;
     }
 
     public static void numberOfChoice(int number) {
@@ -40,10 +71,9 @@ public class StoreApp {
         switch (number) {
             case 1:
                 System.out.println("We carry the following inventory: ");
-                Collections.sort(inventory, Comparator.comparing(Product::getName));
+                inventory.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
 
-                for (int i = 0; i < inventory.size(); i++) {
-                    Product p = inventory.get(i);
+                for (Product p : inventory) {
                     System.out.printf("id: %d %s - Price: $%.2f%n",
                             p.getId(), p.getName(), p.getPrice());
                 }
@@ -54,7 +84,7 @@ public class StoreApp {
 
                 Product foundProduct = findById(inventory, id);
                 if (foundProduct != null) {
-                    System.out.println("Product Name: " + foundProduct.getName() + "\n");
+                    System.out.printf("Product Name: %s Price: $%.2f%n", foundProduct.getName(), foundProduct.getPrice());
                 } else {
                     System.out.println("Not found.");
                 }
@@ -94,39 +124,6 @@ public class StoreApp {
             default:
                 throw new IllegalStateException("Unexpected value: " + number);
         }
-    }
-
-    public static ArrayList<Product> getInventory() {
-
-        ArrayList<Product> inventory = new ArrayList<Product>();
-
-        //Reads file line by line
-        try {
-            FileReader fileReader = new FileReader("src/main/resources/inventory.csv");
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line = "";
-
-            //4567|10' 2x4 (grade B)|9.99
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] lineSplit = line.split("\\|");
-
-                int id = Integer.parseInt(lineSplit[0]);
-                String productName = lineSplit[1];
-                double price = Double.parseDouble(lineSplit[2]);
-
-                Product product = new Product(id, productName, price);
-
-                inventory.add(product);
-
-
-            }
-            bufferedReader.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return inventory;
     }
 
     public static Product findById(ArrayList<Product> product, int targetId) {
