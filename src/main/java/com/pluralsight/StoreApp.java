@@ -4,22 +4,48 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.classfile.instruction.SwitchCase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class StoreApp {
 
     static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<Product> inventory = getInventory();
-        System.out.println("We carry the following inventory: ");
-        Collections.sort(inventory, Comparator.comparing(Product::getName));
-        for (int i = 0; i < inventory.size(); i++) {
-            Product p = inventory.get(i);
-            System.out.printf("id: %d %s - Price: $%.2f%n",
-                    p.getId(), p.getName(), p.getPrice());
-        }
 
+        //Prompts for the menu
+        boolean keepGoing = false;
+        do {
+            String choices = """
+                    1-List all products
+                    2-Lookup a product by its id
+                    3-Find all products within a price range
+                    4-Add a new product
+                    5-Quit the application
+                    """;
+
+            System.out.println("What do you want to do? \n" + choices);
+            int number = scanner.nextInt();
+            switch (number) {
+                case 1:
+                    System.out.println("We carry the following inventory: ");
+                    Collections.sort(inventory, Comparator.comparing(Product::getName));
+                    for (int i = 0; i < inventory.size(); i++) {
+                        Product p = inventory.get(i);
+                        System.out.printf("id: %d %s - Price: $%.2f%n",
+                                p.getId(), p.getName(), p.getPrice());
+                    };
+                    break;
+                case 2:
+                    keepGoing = true;
+                    break;
+            }
+
+
+        } while (!keepGoing);
     }
 
     public static ArrayList<Product> getInventory() {
