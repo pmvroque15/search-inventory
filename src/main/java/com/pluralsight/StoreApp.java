@@ -10,31 +10,90 @@ import java.util.Comparator;
 import java.util.Scanner;
 
 public class StoreApp {
+
     public static Scanner scanner = new Scanner(System.in);
     public static ArrayList<Product> inventory = getInventory();
-
+    public static boolean keepGoing = true;
     static void main(String[] args) {
         menu();
     }
 
     public static void menu() {
-
-        boolean keepGoing = false;
         do {
             String choices = """
                     1-List all products
                     2-Lookup a product by its id
                     3-Find all products within a price range
                     4-Add a new product
-                    5-Quit the application
+                    5-Quit the application \n
                     """;
 
             System.out.println("What do you want to do? \n" + choices);
             int number = Integer.parseInt(scanner.nextLine());
             numberOfChoice(number);
 
+        } while (keepGoing);
+    }
 
-        } while (!keepGoing);
+    public static void numberOfChoice(int number) {
+
+        switch (number) {
+            case 1:
+                System.out.println("We carry the following inventory: ");
+                Collections.sort(inventory, Comparator.comparing(Product::getName));
+
+                for (int i = 0; i < inventory.size(); i++) {
+                    Product p = inventory.get(i);
+                    System.out.printf("id: %d %s - Price: $%.2f%n",
+                            p.getId(), p.getName(), p.getPrice());
+                }
+                break;
+            case 2:
+                System.out.println("What is the ID #: ");
+                int id = Integer.parseInt(scanner.nextLine());
+
+                Product foundProduct = findById(inventory, id);
+                if (foundProduct != null) {
+                    System.out.println("Product Name: " + foundProduct.getName() + "\n");
+                } else {
+                    System.out.println("Not found.");
+                }
+                break;
+            case 3:
+                System.out.println("Enter minimum price: ");
+                double minimumPrice = Double.parseDouble(scanner.nextLine());
+
+                System.out.println("Enter maximum price: ");
+                double maximumPrice = Double.parseDouble(scanner.nextLine());
+
+                ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
+                if (!results.isEmpty()) {
+                    for (Product p : results) {
+                        System.out.printf("ID: %d Name: %s Price: $%.2f%n", p.getId(), p.getName(), p.getPrice());
+                    }
+                } else {
+                    System.out.println("No products found");
+                }
+                break;
+            case 4:
+                //method for adding products
+                System.out.println("What is the name of the product? ");
+                String productName = scanner.nextLine();
+
+                System.out.println("What is the price of the product? ");
+                double productPrice = Double.parseDouble(scanner.nextLine());
+
+                System.out.println("What is the ID #:");
+                int productId = Integer.parseInt(scanner.nextLine());
+
+                addProduct(inventory, productId, productName, productPrice);
+                break;
+            case 5:
+                keepGoing = false;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + number);
+        }
     }
 
     public static ArrayList<Product> getInventory() {
@@ -79,56 +138,20 @@ public class StoreApp {
         return null;
     }
 
-    public static void numberOfChoice(int number) {
-        switch (number) {
-            case 1:
-                System.out.println("We carry the following inventory: ");
-                Collections.sort(inventory, Comparator.comparing(Product::getName));
-                for (int i = 0; i < inventory.size(); i++) {
-                    Product p = inventory.get(i);
-                    System.out.printf("id: %d %s - Price: $%.2f%n",
-                            p.getId(), p.getName(), p.getPrice());
-                }
-                ;
-                break;
-            case 2:
-                System.out.println("What is the ID #: ");
-                int id = Integer.parseInt(scanner.nextLine());
-
-                Product foundProduct = findById(inventory, id);
-                if (foundProduct != null) {
-                    System.out.println("Product Name: " + foundProduct.getName() + "\n");
-                } else {
-                    System.out.println("Not found.");
-                }
-            case 3:
-                System.out.println("Enter minimum price: ");
-                double minimumPrice = Double.parseDouble(scanner.nextLine());
-
-                System.out.println("Enter maximum price: ");
-                double maximumPrice = Double.parseDouble(scanner.nextLine());
-                ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
-
-                if (!results.isEmpty()) {
-                    for (Product p: results) {
-                        System.out.println("Product: " + p.getName() + "\n");
-                    }
-                } else {
-                    System.out.println("No products found");
-                }
-
-        }
-    }
-
-    public static ArrayList<Product> findByPriceRange(ArrayList<Product> products, double min, double max) {
-       ArrayList<Product> results = new ArrayList<>();
+    public static ArrayList<Product> findByPriceRange(ArrayList<Product> products, double minimumPrice, double maximumPrice) {
+        ArrayList<Product> results = new ArrayList<>();
 
         for (Product product : products) {
-            if (product.getPrice() >= min && product.getPrice() <= max) {
+            if (product.getPrice() >= minimumPrice && product.getPrice() <= maximumPrice) {
                 results.add(product);
             }
         }
         return results;
+    }
+
+    public static void addProduct(ArrayList<Product> products, int productId, String productName, double productPrice) {
+        Product newProduct = new Product(productId, productName, productPrice);
+        products.add(newProduct);
     }
 }
 
