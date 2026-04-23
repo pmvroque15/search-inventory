@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.classfile.instruction.SwitchCase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +27,7 @@ public class StoreApp {
                     """;
 
             System.out.println("What do you want to do? \n" + choices);
-            int number = scanner.nextInt();
+            int number = Integer.parseInt(scanner.nextLine());
             switch (number) {
                 case 1:
                     System.out.println("We carry the following inventory: ");
@@ -40,8 +39,16 @@ public class StoreApp {
                     };
                     break;
                 case 2:
-                    keepGoing = true;
-                    break;
+                    System.out.println("What is the ID #: ");
+                    int id = Integer.parseInt(scanner.nextLine());
+
+                    Product foundProduct = findById(inventory, id);
+                    if (foundProduct != null){
+                        System.out.println("Product Name: " + foundProduct.getName() + "\n");
+                    } else {
+                        System.out.println("Not found.");
+                    }
+
             }
 
 
@@ -79,6 +86,16 @@ public class StoreApp {
             throw new RuntimeException(e);
         }
         return inventory;
+    }
+
+    public static Product findById(ArrayList<Product> product, int targetId) {
+        for (Product p : product) {
+            if (p.getId() == targetId) {
+                return p;
+            }
+        }
+
+        return null;
     }
 }
 
