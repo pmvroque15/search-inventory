@@ -17,25 +17,28 @@ public class StoreApp {
 
     public static void menu() {
         do {
-            numberOfChoice(readInt());
-        } while (keepGoing);
-    }
-
-    public static int readInt() {
-        String choices = """
+            String choices = """
                     1-List all products
                     2-Lookup a product by its id
                     3-Find all products within a price range
                     4-Add a new product
                     5-Quit the application \n
                     """;
-        System.out.println("\nWhat do you want to do? \n" + choices);
+            System.out.println("\nWhat do you want to do? \n" + choices);
+            numberOfChoice(readInt());
+        } while (keepGoing);
+    }
 
+    public static int readInt() {
         return Integer.parseInt(scanner.nextLine());
         }
 
     public static double readDouble() {
         return Double.parseDouble(scanner.nextLine());
+    }
+
+    public static String readString() {
+        return scanner.nextLine();
     }
 
     public static ArrayList<Product> getInventory() {
@@ -81,7 +84,7 @@ public class StoreApp {
                 break;
             case 2:
                 System.out.println("What is the ID #: ");
-                int id = Integer.parseInt(scanner.nextLine());
+                int id = readInt();
 
                 Product foundProduct = findById(inventory, id);
                 if (foundProduct != null) {
@@ -96,6 +99,7 @@ public class StoreApp {
 
                 System.out.println("Enter maximum price: ");
                 double maximumPrice = readDouble();
+
                 ArrayList<Product> results = findByPriceRange(inventory, minimumPrice, maximumPrice);
                 if (!results.isEmpty()) {
                     for (Product p : results) {
@@ -108,13 +112,13 @@ public class StoreApp {
             case 4:
                 //method for adding products
                 System.out.println("What is the name of the product? ");
-                String productName = scanner.nextLine();
+                String productName = readString();
 
                 System.out.println("What is the price of the product? ");
-                double productPrice = Double.parseDouble(scanner.nextLine());
+                double productPrice = readDouble();
 
                 System.out.println("What is the ID #:");
-                int productId = Integer.parseInt(scanner.nextLine());
+                int productId = readInt();
 
                 addProduct(inventory, productId, productName, productPrice);
                 break;
